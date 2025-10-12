@@ -14,8 +14,8 @@ import java.sql.SQLException;
  */
 public class ConexaoMySQL implements ConexaoBD {
     private static final String URL = "jdbc:mysql://localhost:3306/ecommerce";
-    private static final String USUARIO = "root";
-    private static final String SENHA = "catolica";
+    private static final String USUARIO = "digite_seu_usuario"; 
+    private static final String SENHA = "digite_sua_senha"; 
     
     @Override
     public Connection obterConexao() throws Exception {

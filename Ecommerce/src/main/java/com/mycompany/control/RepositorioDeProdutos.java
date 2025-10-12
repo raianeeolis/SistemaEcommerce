@@ -4,10 +4,14 @@
  */
 package com.mycompany.control;
 
+import com.mycompany.model.Produto;
+import java.util.List;
 /**
  *
  * @author raiane.souza
  */
 public interface RepositorioDeProdutos {
+    
+    List<Produto> listarTodos() throws Exception;
     
 }
