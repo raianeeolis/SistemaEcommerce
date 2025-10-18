@@ -14,4 +14,7 @@ public interface RepositorioDeProdutos {
     
     List<Produto> listarTodos() throws Exception;
     
+    Produto buscarPorId(int id) throws Exception;
+    
+    boolean adicionarProduto(int idProduto, int quantidade) throws Exception;
 }

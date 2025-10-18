@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import com.mycompany.model.CarrinhoDeCompras;
+import com.mycompany.model.ItemCarrinho;
+import com.mycompany.model.Produto;
 /**
  *
  * @author raiane.souza
@@ -26,6 +29,12 @@ public class PersistenciaProduto implements RepositorioDeProdutos {
     private static final String DESCRICAO = "descricao"; 
     private static final String PRECO = "preco"; 
     private static final String QUANTIDADE_ESTOQUE = "quantidade_estoque"; 
+    
+    private final CarrinhoDeCompras carrinho;
+
+    public PersistenciaProduto(CarrinhoDeCompras carrinho) {
+        this.carrinho = carrinho;
+    }
 
     @Override
     public List<Produto> listarTodos() throws Exception {
@@ -60,4 +69,53 @@ public class PersistenciaProduto implements RepositorioDeProdutos {
         return produtos;
     }
 
+    @Override
+    public Produto buscarPorId(int id) throws Exception { 
+        Connection conexao = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conexao = conexaoBD.obterConexao();
+            
+            String sql = "SELECT * FROM " + NOME_TABELA + " WHERE " + ID + " = ?"; 
+
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, id); 
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Produto produto = new Produto(
+                    rs.getInt("id"),
+                    rs.getString("nome"),
+                    rs.getString("descricao"),
+                    rs.getDouble("preco"),
+                    rs.getInt("quantidade_estoque")
+                );
+                return produto; 
+            } else {
+                throw new Exception("Produto com ID " + id + " não encontrado no estoque.");
+            }
+        } catch (SQLException e) {
+            throw new Exception("Erro ao buscar produto no banco de dados: " + e.getMessage()); 
+        } finally {
+            conexaoBD.fecharConexao(conexao); 
+        }
+    }
+    
+    @Override
+    public boolean adicionarProduto(int idProduto, int quantidade) throws Exception {
+        
+        Produto produto = this.buscarPorId(idProduto); 
+        
+        if (produto.getQuantidade_estoque() < quantidade) {
+            System.out.println("Estoque insuficiente.");
+            return false;
+        }
+        
+        this.carrinho.adicionarItem(new ItemCarrinho(produto, quantidade)); 
+        System.out.println("Produto '" + produto.getNome() + "' (Qtd: " + quantidade + ") adicionado ao carrinho.");  
+        
+        return true;
+    }
 }

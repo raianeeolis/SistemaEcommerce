@@ -12,6 +12,7 @@ import java.util.Scanner;
 import com.mycompany.model.Produto;
 import com.mycompany.control.PersistenciaProduto;
 import com.mycompany.control.RepositorioDeProdutos;
+import com.mycompany.model.CarrinhoDeCompras;
 /**
  *
  * @author raiane.souza
@@ -20,10 +21,12 @@ public class Ecommerce {
         public static void main(String[] args) {
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
         
-        RepositorioDeProdutos repositorio = new PersistenciaProduto();
+        CarrinhoDeCompras carrinho = new CarrinhoDeCompras();
         
+        RepositorioDeProdutos repositorio = new PersistenciaProduto(carrinho);
+
         Scanner sc = new Scanner(System.in);
-        List<Produto> carrinho = new ArrayList<>(); 
+        List<Produto> produto = new ArrayList<>(); 
 
         while(true) {
             try { 
@@ -60,7 +63,16 @@ public class Ecommerce {
                     }
 
                     case 2 -> { 
+                        System.out.println("--- ADICIONAR AO CARRINHO ---");
+                        System.out.print("Digite o ID do produto para adicionar: ");
+                        int idProduto = sc.nextInt();
                         
+                        System.out.print("Digite a quantidade: ");
+                        int quantidade = sc.nextInt();
+                        sc.nextLine(); 
+
+                        repositorio.adicionarProduto(idProduto, quantidade);
+                        System.out.println();
                     } 
                     
                     case 3 -> { 
